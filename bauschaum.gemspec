@@ -11,6 +11,9 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "bauschaum"
 
+  s.add_dependency "rugged", "~> 0.17.0.b6"
+  s.add_development_dependency "debugger"
+
   s.files        = `git ls-files`.split("\n")
   s.require_path = 'lib'
 end

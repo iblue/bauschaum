@@ -1,3 +1,5 @@
+require 'rugged'
+
 module Bauschaum
 end
 
