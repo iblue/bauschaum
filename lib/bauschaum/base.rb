@@ -4,18 +4,19 @@ class Bauschaum::Base
   end
 
   def exists?
-    if repo.empty?
-      return false # Not files in an empty repo
-    end
-    # Take look at the current tree.
-    recent_commit = repo.lookup(repo.head.target)
-    # FIXME: Does not support directories!
-    files = recent_commit.tree.entries.map{|e| e[:name]}
-    files.include? @filename
+    !!my_current_sha
   end
 
   def content=(content)
     @content = content
+  end
+
+  def content
+    if exists?
+      @content ||= repo.lookup(my_current_sha).content
+    else
+      @content ||= ""
+    end
   end
 
   def commit!(message, author, timestamp = Time.now)
@@ -67,5 +68,18 @@ class Bauschaum::Base
       commits += 1
     end
     commits
+  end
+
+  private
+  def my_current_sha
+    if repo.empty?
+      return nil # Not files in an empty repo
+    end
+    # Take look at the current tree.
+    recent_commit = repo.lookup(repo.head.target)
+    # FIXME: Does not support directories!
+    me = recent_commit.tree.entries.select{|e| e[:name] == @filename}
+    return nil unless me.first
+    me.first[:oid]
   end
 end
